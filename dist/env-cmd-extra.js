@@ -39,7 +39,7 @@ function parseArgs(args) {
     // console.log('command.opts()', command.opts())
     return {
         environment: (_a = command.opts().env) !== null && _a !== void 0 ? _a : '',
-        ignore: (_b = command.opts().ignore) !== null && _b !== void 0 ? _b : [].map,
+        ignore: (_b = command.opts().ignore) !== null && _b !== void 0 ? _b : [],
         test: (_c = command.opts().test) !== null && _c !== void 0 ? _c : false
     };
 }

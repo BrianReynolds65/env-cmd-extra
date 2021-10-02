@@ -25,7 +25,7 @@ export function parseArgs (args: string[]): CmdOptions {
     // console.log('command.opts()', command.opts())
     return {
       environment:command.opts().env??'',
-      ignore: command.opts().ignore??[].map,
+      ignore: command.opts().ignore??[],
       test: command.opts().test??false
     }
 }

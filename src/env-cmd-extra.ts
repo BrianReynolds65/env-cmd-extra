@@ -61,6 +61,7 @@ function processFiles(dir:string, options:CmdOptions) {
   return readdir(dir).then((subdirs) => {
     return Promise.all(subdirs.map((subdir) => {
       let path = resolve(dir, subdir)
+      console.log('options.ignore',JSON.stringify(options.ignore))
       if (options.ignore.some(x => x == subdir)) {
         console.log(`Ignoring ${path}`)
         return

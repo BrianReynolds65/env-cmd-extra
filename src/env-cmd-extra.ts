@@ -8,6 +8,7 @@ const packageJson = require('../package.json') /* eslint-disable-line */
 interface CmdOptions {
   environment?: string
   ignore: string[]
+  test: boolean
 }
 
 export function parseArgs (args: string[]): CmdOptions {
@@ -16,14 +17,16 @@ export function parseArgs (args: string[]): CmdOptions {
     .version(packageJson.version, '-v, --version')
     .usage('[options] <command> [...args]')
     .option('-e, --env <env>', 'The environment to switch to.')
-    .option('-i, --ignore [folders...]', 'The environment to switch to.')
+    .option('-i, --ignore [folders...]', 'Ignore these folders.')
+    .option('-t, --test', 'Test only. No file operations.')
     .parse(args)
 
     // console.log('args', args)
     // console.log('command.opts()', command.opts())
     return {
       environment:command.opts().env??'',
-      ignore: command.opts().ignore??[]
+      ignore: command.opts().ignore??[].map,
+      test: command.opts().test??false
     }
 }
 
@@ -46,6 +49,7 @@ export async function CLI (args: string[]): Promise<void> {
 
 async function EnvCmdExtra(options: CmdOptions): Promise<void>
 {
+  console.log('TESTING ONLY. NO FILE OPERATIONS WILL BE EXECUTED')
   return processFiles(process.cwd(), options).then(() => {
     console.log('finished!')
   }).catch((err) => {
@@ -71,15 +75,23 @@ function processFiles(dir:string, options:CmdOptions) {
             let newPath = path.substr(0, path.length - (options!.environment!.length+1))
             let orgPath = path.substr(0, path.length - (options!.environment!.length+1)) + '.original'
             if (!existsSync(orgPath)) {
-              console.log(`Saving ${newPath} to ${orgPath}`)
-              await copyFile(newPath, orgPath)
+              if (!options.test) {
+                console.log(`Saving ${newPath} to ${orgPath}`)
+                await copyFile(newPath, orgPath)
+              }
+              else
+                console.log(`Would have saved ${newPath} to ${orgPath}`)
             }
-            return copyFile(path, newPath).then(() => {
-              console.log(`Copied ${path} to ${newPath}`)
-            })
-            .catch((err) => {
-              console.log(`ERROR Copying ${path} to ${newPath}. ${err}`)
-            })
+            if (!options.test)
+              return copyFile(path, newPath).then(() => {
+                console.log(`Copied ${path} to ${newPath}`)
+              })
+              .catch((err) => {
+                console.log(`ERROR Copying ${path} to ${newPath}. ${err}`)
+              })
+            else
+              console.log(`Would have copied ${path} to ${newPath}`)
+
           }
         }
       })

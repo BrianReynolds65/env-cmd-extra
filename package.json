@@ -1,0 +1,29 @@
+{
+  "name": "env-cmd-extra",
+  "version": "1.0.0",
+  "description": "",
+  "main": "bin/env-cmd-extra.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": {
+    "env-cmd-extra": "./bin/env-cmd-extra.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@file-services/posix-path": "^2.1.0",
+    "commander": "^8.2.0",
+    "fs": "0.0.1-security",
+    "path": "^0.12.7"
+  },
+  "devDependencies": {
+    "@types/node": "^16.10.2",
+    "path-posix": "^1.0.0",
+    "ts-node": "^10.2.1",
+    "ts-standard": "^10.0.0",
+    "tslint": "^6.1.3",
+    "typescript": "^4.4.3"
+  }
+}

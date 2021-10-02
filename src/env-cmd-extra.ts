@@ -1,4 +1,5 @@
 import * as commander from 'commander'
+import { existsSync } from 'fs';
 import { readdir, stat, copyFile } from 'fs/promises';
 import { resolve } from 'path';
 import { urlToHttpOptions } from 'url';
@@ -45,7 +46,7 @@ export async function CLI (args: string[]): Promise<void> {
 
 async function EnvCmdExtra(options: CmdOptions): Promise<void>
 {
-  processFiles(process.cwd(), options).then(() => {
+  return processFiles(process.cwd(), options).then(() => {
     console.log('finished!')
   }).catch((err) => {
     console.log(err)
@@ -60,7 +61,7 @@ function processFiles(dir:string, options:CmdOptions) {
         console.log(`Ignoring ${path}`)
         return
       }
-      return stat(path).then((stat) => {
+      return stat(path).then(async(stat) => {
         if (stat.isDirectory()) {
           //console.log('IsDirectory')
           processFiles(path, options)
@@ -68,6 +69,11 @@ function processFiles(dir:string, options:CmdOptions) {
         else {
           if (path.endsWith('.' + options.environment)) {
             let newPath = path.substr(0, path.length - (options!.environment!.length+1))
+            let orgPath = path.substr(0, path.length - (options!.environment!.length+1)) + '.original'
+            if (!existsSync(orgPath)) {
+              console.log(`Saving ${newPath} to ${orgPath}`)
+              await copyFile(newPath, orgPath)
+            }
             return copyFile(path, newPath).then(() => {
               console.log(`Copied ${path} to ${newPath}`)
             })

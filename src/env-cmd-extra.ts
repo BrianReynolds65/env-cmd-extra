@@ -49,7 +49,8 @@ export async function CLI (args: string[]): Promise<void> {
 
 function EnvCmdExtra(options: CmdOptions): Promise<void>
 {
-  console.log('TESTING ONLY. NO FILE OPERATIONS WILL BE EXECUTED')
+  if (options.test)
+    console.log('TESTING ONLY. NO FILE OPERATIONS WILL BE EXECUTED')
   return processFiles(process.cwd(), options).then(() => {
     console.log('finished!')
   }).catch((err) => {
